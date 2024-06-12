@@ -1,0 +1,50 @@
+/* src/styles/Tree.css */
+.tree-container {
+    margin: 20px auto;
+    max-width: 600px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-color: red;
+    
+    
+ 
+  }
+  
+  .tree-root {
+    list-style-type: none;;
+    padding-left: 20px;
+  }
+  
+  .tree-node {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+    cursor: pointer;
+    user-select: none;
+    
+    
+  }
+  
+  .tree-node:hover {
+    background-color: gold;
+    border-radius: 20px;
+  }
+  
+  .tree-toggler {
+    width: 20px;
+    text-align: center;
+    margin-right: 5px;
+    font-weight: bold;
+    display: inline-block;
+  }
+  
+  .tree-children {
+    list-style-type: none;
+    padding-left: 20px;
+    border-left: 1px dashed #ccc;
+    margin-left: 5px;
+  }
+  
