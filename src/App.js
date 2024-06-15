@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import TreeNode from './component/TreeNode';
 import '../src/component/Tree.css';
+import './App.css'
 
-const App = () => {
+
+const Tree = () => {
   const [nodes, setNodes] = useState([
     {
       id: "1",
-      name: "division",
+      name: "Executive Management",
       child_modules: [
         {
           id: "1-1",
-          name: "department",
+          name: "Management office",
           path: "/division/department",
           child_modules: [
             {
@@ -43,92 +45,75 @@ const App = () => {
     }
   ]);
 
-  const handleAdd = (parentId,node) => {
-    
-      const newNode = { id: `${node.id}-${Date.now()}`, name: 'New Node',  path: `${node.path}/new node`, child_modules: [] };
-      
-    const addNode = (nodes, parentId) => {
-      return nodes.map(n => {
-        if (n.id === parentId) {
-          n.child_modules = [...n.child_modules, newNode];
-        } else if (n.child_modules.length) {
-          n.child_modules = addNode(n.child_modules, parentId);
-        }
-        return n;
-      });
-    };
-    
-    setNodes(addNode(nodes, parentId));
-    
-  
-  // const handleAdd = (parentId, nodeName) => {
-  //   const newNode = {
-  //     id: `${parentId}-${Date.now()}`,
-  //     name: nodeName,
-  //     path: `${parentId}/new node`,
-  //     child_modules: []
-  //   }
-  // };
+  const handleAdd = (id, nodeName) => {
+    const newNode = { id: `${id}-${Date.now()}`, name: nodeName, path: `${id}/new node`, child_modules: [] };
 
-    const addNodeRecursive = (nodesList, parentId) => {
+    const addNodeRecursive = (nodesList, id) => {
       return nodesList.map(node => {
-        if (node.id === parentId) {
-          node.child_modules = [...node.child_modules, newNode];
+        if (node.id === id) {
+          return {
+            ...node,
+            child_modules: [...node.child_modules, newNode]
+          };
         } else if (node.child_modules.length) {
-          node.child_modules = addNodeRecursive(node.child_modules, parentId);
+          return {
+            ...node,
+            child_modules: addNodeRecursive(node.child_modules, id)
+          };
         }
         return node;
       });
     };
-    
-    setNodes(addNodeRecursive(nodes, parentId)
-  );
-  
-};
-  
-  
 
-  const handleDelete = (node) => {
-    const deleteNode = (nodes, parentId) => {
-      return nodes.filter(n => n.id !== parentId).map(n => {
-        if (n.child_modules.length) {
-          n.child_modules = deleteNode(n.child_modules, parentId);
+    setNodes(prevNodes => addNodeRecursive(prevNodes, id));
+  };
+
+  const handleDelete = (id) => {
+    const deleteNode = (nodes, id) => {
+      return nodes.filter(n => n.id !== id).map(n => {
+        if (n.child_modules) {
+          n.child_modules = deleteNode(n.child_modules, id);
         }
         return n;
       });
     };
-    
-    setNodes(deleteNode(nodes, node.id));
+
+    setNodes(prevNodes => deleteNode(prevNodes, id));
   };
 
-  const handleEdit = (node) => {
-    const newName = prompt('Enter new name:', node.name);
+  const handleEdit = (id, newName) => {
     if (newName) {
-      const editNode = (nodes, parentId) => {
+      const editNode = (nodes, id) => {
         return nodes.map(n => {
-          if (n.id === parentId) {
-            n.name = newName;
+          if (n.id === id) {
+            return { ...n, name: newName };
           } else if (n.child_modules.length) {
-            n.child_modules = editNode(n.child_modules, parentId);
+            return {
+              ...n,
+              child_modules: editNode(n.child_modules, id)
+            };
           }
           return n;
         });
       };
-      
-      setNodes(editNode(nodes, node.id));
+
+      setNodes(prevNodes => editNode(prevNodes, id));
     }
   };
 
   return (
     <div>
       {nodes.map(node => (
-    
-        <TreeNode key={node.id} node={node} onAdd={handleAdd} onDelete={handleDelete} onEdit={handleEdit} />
-        
+        <TreeNode
+          key={node.id}
+          node={node}
+          onAdd={handleAdd}
+          onDelete={handleDelete}
+          onEdit={handleEdit}
+        />
       ))}
     </div>
   );
+};
 
-
-}
-export default App;
+export default Tree;

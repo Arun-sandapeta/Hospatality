@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import { CiEdit } from "react-icons/ci";
+import { IoMdAdd } from "react-icons/io";
+import { MdDeleteOutline } from "react-icons/md";
 
-const TreeNode = ({ node, addNode, deleteNode, editNode }) => {
+const TreeNode = ({ node, onAdd, onDelete, onEdit }) => {
   const [expanded, setExpanded] = useState(false);
 
   const toggleExpand = () => {
@@ -8,21 +11,21 @@ const TreeNode = ({ node, addNode, deleteNode, editNode }) => {
   };
 
   const handleAddClick = () => {
-    const nodeName = prompt("Enter the name of the new node:");
+    const nodeName = prompt("Enter the name of the new node:", node.name);
     if (nodeName) {
-      addNode(node.id, nodeName);
+      onAdd(node.id, nodeName);
     }
   };
 
 
   const handleDeleteClick = () => {
-    deleteNode(node.id);
+    onDelete(node.id);
   };
 
   const handleEditClick = () => {
     const newNodeName = prompt("Enter the new name of the node", node.name);
     if (newNodeName) {
-      editNode(node.id, newNodeName);
+      onEdit(node.id, newNodeName);
     }
   };
 
@@ -39,26 +42,21 @@ const TreeNode = ({ node, addNode, deleteNode, editNode }) => {
         
 
         {node.name}
-        <div className='buttns'>
-        <button onClick={() => handleAddClick(node)}>Add</button>
-        <button onClick={() => handleDeleteClick(node)}>Edit</button>
-        <button onClick={() => handleEditClick(node)}>Delete</button>
-        </div>
-        </div>
-
         
-        
-     
-      
+        <button onClick={ handleAddClick}><IoMdAdd /></button>
+        <button onClick={handleEditClick}><CiEdit /></button>
+       <button onClick={handleDeleteClick}><MdDeleteOutline /></button>
+       
+        </div>
       {expanded && node.child_modules && node.child_modules.length > 0 && (
         <ul className="tree-child_modules">
           {node.child_modules.map((child) => (
             <TreeNode
               key={child.id}
               node={child}
-              addNode={addNode}
-              deleteNode={deleteNode}
-              editNode={editNode}
+              onAdd={onAdd}
+              onDelete={onDelete}
+              onEdit={onEdit}
             />
           ))}
         </ul>
